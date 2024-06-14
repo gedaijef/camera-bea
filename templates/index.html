@@ -1,17 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenCV Camera</title>
+    <title>Abrir Câmera</title>
 </head>
-<body>
-    <h1>OpenCV Camera</h1>
-    <button id="start-camera">Start Camera</button>
-    <video id="video" width="640" height="480" autoplay></video>
-    <button id="capture">Capture Photo</button>
-    <canvas id="canvas" width="640" height="480"></canvas>
 
-    <script src="../static/script.js"></script>
+<body>
+    <button onclick="document.getElementById('cameraInput').click();">Abrir Câmera</button>
+    <input type="file" id="cameraInput" accept="image/*" style="display: none;" capture="environment">
+
+    <script>
+        document.getElementById('cameraInput').addEventListener('change', function (event) {
+            // Aqui você pode lidar com o arquivo selecionado ou capturado
+            const file = event.target.files[0];
+            if (file) {
+                console.log('Imagem capturada:', file);
+                // Você pode adicionar código para exibir a imagem ou enviá-la para o servidor
+            }
+        });
+    </script>
 </body>
+
 </html>
