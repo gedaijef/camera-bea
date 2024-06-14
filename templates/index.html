@@ -4,22 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abrir Câmera</title>
+    <title>Leitor de QR Code</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 </head>
 
 <body>
-    <button onclick="document.getElementById('cameraInput').click();">Abrir Câmera</button>
-    <input type="file" id="cameraInput" accept="image/*" style="display: none;" capture="environment">
+    <button id="startButton">Abrir Câmera</button>
+    <canvas id="canvas" hidden></canvas>
+    <video id="video" width="300" height="300" style="border: 1px solid black;"></video>
+    <p id="result"></p>
 
     <script>
-        document.getElementById('cameraInput').addEventListener('change', function (event) {
-            // Aqui você pode lidar com o arquivo selecionado ou capturado
-            const file = event.target.files[0];
-            if (file) {
-                console.log('Imagem capturada:', file);
-                // Você pode adicionar código para exibir a imagem ou enviá-la para o servidor
-            }
+        const video = document.getElementById('video');
+        const canvasElement = document.getElementById('canvas');
+        const canvas = canvasElement.getContext('2d');
+        const result = document.getElementById('result');
+
+        document.getElementById('startButton').addEventListener('click', async function () {
+            // Solicita acesso à câmera
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+            video.setAttribute('playsinline', true); // necessário para o iOS safari
+            video.play();
+            requestAnimationFrame(tick);
         });
+
+        function tick() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvasElement.hidden = false;
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: 'dontInvert',
+                });
+                if (code) {
+                    result.innerText = `Código QR detectado: ${code.data}`;
+                    // Aqui você pode parar o vídeo se quiser
+                    video.pause();
+                } else {
+                    result.innerText = 'Nenhum QR Code detectado.';
+                }
+            }
+            requestAnimationFrame(tick);
+        }
     </script>
 </body>
 
