@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCV Camera</title>
+</head>
+<body>
+    <h1>OpenCV Camera</h1>
+    <button id="start-camera">Start Camera</button>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="capture">Capture Photo</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
