@@ -4,8 +4,12 @@ const startCameraButton = document.getElementById('start-camera');
 const captureButton = document.getElementById('capture');
 
 startCameraButton.addEventListener('click', async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    video.srcObject = stream;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+    }
 });
 
 captureButton.addEventListener('click', () => {
