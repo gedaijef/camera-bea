@@ -23,6 +23,7 @@ def index():
 @app.route("/salvar", methods=["POST"])
 def salvar():
     data = request.json
+    print(data)
     nr_inscricao = data["nr_inscricao"]
     data_presenca = data["data_presenca"]
 
