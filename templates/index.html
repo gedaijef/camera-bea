@@ -142,7 +142,7 @@
                     enviarDados(nr_inscricao, data_presenca)
 
                     // Redirecionar para o novo index
-                    window.open(code.data, "_self");
+                    window.open(code.data);
                 } else {
                     result.innerText = 'Nenhum QR Code detectado.';
                 }
@@ -150,20 +150,21 @@
             requestAnimationFrame(tick);
         }
 
-        function enviarDados(nr_inscricao, data_presenca) {
+        function enviarDados(num, dt) {
+            console.log("entrou na função enviarDados")
             fetch ('/salvar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ nr_inscricao: nr_inscricao, data_presenca: data_presenca }),
+                body: JSON.stringify({ "nr_inscricao": num, "data_presenca": dt })
             })
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
                 })
                 .catch((error) => {
-                    console.error('Error:', error);
+                    console.log('Error:', error);
                 });
 
         }

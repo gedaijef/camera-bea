@@ -5,25 +5,16 @@ import psycopg2
 from db_config import get_db_connection
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM presenca")
-        rows = cur.fetchall()
-        cur.close()
-        conn.close()
-        return render_template('index.html', rows=rows)
-    except Exception as e:
-        print("Erro: " + e)
-        return jsonify({"status": "erro", "error": str(e)}), 500
+    render_template('index.html')
 
 @app.route("/salvar", methods=["POST"])
 def salvar():
     data = request.json
-    print(data)
+    print("chegou em /salvar: " + str(data))
     nr_inscricao = data["nr_inscricao"]
     data_presenca = data["data_presenca"]
 
