@@ -15,9 +15,20 @@
     <p id="result"></p>
 
     <script>
+        // onde vamos capturar o qrcode
         const video = document.getElementById('video');
+
+        // onde vamos mostrar o qrcode capturado
         const canvasElement = document.getElementById('canvas');
+
+        // criando um contexto de renderização 2D para o elemento <canvas>
+        // canvasElement.getContext('2d') retorna um objeto que fornece métodos e propriedades para desenhar e manipular gráficos em um contexto bidimensional.
+
+        // o contexto 2D é utilizado para capturar o frame atual do vídeo e processar a imagem para detecção de QR Code
         const canvas = canvasElement.getContext('2d');
+
+
+        // texto que fala se nenhum qrcode for detectado
         const result = document.getElementById('result');
 
         document.getElementById('startButton').addEventListener('click', async function () {
@@ -26,19 +37,36 @@
             video.srcObject = stream;
             video.setAttribute('playsinline', true); // necessário para o iOS safari
             video.play();
+
+            // método do navegador que informa ao navegador que você deseja realizar uma animação e solicita que o navegador chame uma função específica para atualizar a tela na próxima vez que ele for redesenhar a tela
             requestAnimationFrame(tick);
         });
 
         function tick() {
             if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                canvasElement.hidden = false;
+
+                // disponibilizando o canvas - tela que aparece embaixo
+                // canvasElement.hidden = false;
                 canvasElement.height = video.videoHeight;
                 canvasElement.width = video.videoWidth;
+
+                // canvas.drawImage: Desenha o frame atual do vídeo no canvas.
                 canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+                // canvas.getImageData: Captura os dados de pixel do canvas para processamento.
+                // imageData é um objeto que contém os dados de pixel do canvas. Foi obtido usando o método getImageData do contexto 2D.
                 const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+
+                // jsQR: Decodifica o QR Code dos dados da imagem.
+                // imageData.data é um array contendo os valores RGBA de cada pixel na imagem.
+                // imageData.width e imageData.height são as dimensões da imagem.
+
+                // inversionAttempts: Define como a biblioteca deve lidar com a inversão de cores. 
                 const code = jsQR(imageData.data, imageData.width, imageData.height, {
                     inversionAttempts: 'dontInvert',
                 });
+
+                // se o qrcode for detectado
                 if (code) {
                     result.innerText = `Código QR detectado: ${code.data}`;
 
