@@ -133,12 +133,13 @@
                     video.pause();
 
                     // Pegando número da inscrição e a data atual
-                    let num_inscricao = code.data
-                    num_inscricao = num_inscricao.substr(num_inscricao.lastIndexOf('/') + 1, num_inscricao.lastIndexOf('.html'))
+                    let nr_inscricao = code.data
+                    nr_inscricao = nr_inscricao.substr(nr_inscricao.lastIndexOf('/') + 1, nr_inscricao.lastIndexOf('.html'))
 
-                    let data = new Date()
+                    let data_presenca = new Date()
 
                     // enviar dados para banco de dados
+                    enviarDados(nr_inscricao, data_presenca)
 
                     // Redirecionar para o novo index
                     window.open(code.data, "_self");
@@ -147,6 +148,24 @@
                 }
             }
             requestAnimationFrame(tick);
+        }
+
+        function enviarDados(nr_inscricao, data_presenca) {
+            fetch ('/salvar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nr_inscricao: nr_inscricao, data_presenca: data_presenca }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
         }
     </script>
 </body>
