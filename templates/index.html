@@ -41,8 +41,20 @@
                 });
                 if (code) {
                     result.innerText = `Código QR detectado: ${code.data}`;
-                    // Aqui você pode parar o vídeo se quiser
+
+                    // Parar o vídeo
                     video.pause();
+
+                    // Pegando número da inscrição e a data atual
+                    let num_inscricao = code.data
+                    num_inscricao = num_inscricao.substr(num_inscricao.lastIndexOf('/') + 1, num_inscricao.lastIndexOf('.html'))
+
+                    let data = new Date()
+
+                    // enviar dados para banco de dados
+
+                    // Redirecionar para o novo index
+                    window.open(code.data, "_self");
                 } else {
                     result.innerText = 'Nenhum QR Code detectado.';
                 }
