@@ -35,7 +35,7 @@ def salvar():
         conn.close()
         return jsonify({"status": "ok"})
     except Exception as e:
-        print("Erro: " + e)
+        print("Erro: " + str(e))
         return jsonify({"status": "erro", "error": str(e)}), 500
     
 if __name__ == '__main__':

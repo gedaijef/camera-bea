@@ -90,6 +90,9 @@
         // texto que fala se nenhum qrcode for detectado
         const result = document.getElementById('result');
 
+        // contador
+        let cont = 0
+
         document.getElementById('startButton').addEventListener('click', async function () {
             // Solicita acesso à câmera
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
@@ -121,12 +124,12 @@
                 // imageData.width e imageData.height são as dimensões da imagem.
 
                 // inversionAttempts: Define como a biblioteca deve lidar com a inversão de cores. 
-                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                let code = jsQR(imageData.data, imageData.width, imageData.height, {
                     inversionAttempts: 'dontInvert',
                 });
 
                 // se o qrcode for detectado
-                if (code) {
+                if (code && cont == 0) {
                     result.innerText = `Código QR detectado: ${code.data}`;
 
                     // Parar o vídeo
@@ -141,9 +144,12 @@
 
                     // enviar dados para banco de dados
                     enviarDados(nr_inscricao, data_presenca)
+                    cont = 1
 
                     // Redirecionar para o novo index
                     window.open(code.data);
+                    cont = 0
+                    code = null
                 } else {
                     result.innerText = 'Nenhum QR Code detectado.';
                 }
