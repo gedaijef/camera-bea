@@ -130,11 +130,12 @@
                     result.innerText = `Código QR detectado: ${code.data}`;
 
                     // Parar o vídeo
-                    video.pause();
+                    // video.pause();
 
                     // Pegando número da inscrição e a data atual
                     let nr_inscricao = code.data
                     nr_inscricao = nr_inscricao.substr(nr_inscricao.lastIndexOf('/') + 1, nr_inscricao.lastIndexOf('.html'))
+                    nr_inscricao = nr_inscricao.split(".")[0]
 
                     let data_presenca = new Date()
 
@@ -152,7 +153,7 @@
 
         function enviarDados(num, dt) {
             console.log("entrou na função enviarDados")
-            fetch ('/salvar', {
+            fetch ('http://127.0.0.1:5500/salvar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

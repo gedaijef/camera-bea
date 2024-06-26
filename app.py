@@ -9,7 +9,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-    render_template('index.html')
+    return render_template('index.html')
 
 @app.route("/salvar", methods=["POST"])
 def salvar():
@@ -39,4 +39,4 @@ def salvar():
         return jsonify({"status": "erro", "error": str(e)}), 500
     
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5500)
