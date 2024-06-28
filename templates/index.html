@@ -99,7 +99,7 @@
             video.play();*/
             const cameraSelect = document.getElementById('cameraSelect');
             const selectedDeviceId = cameraSelect.value;
-            startCamera(selectedDeviceId)
+            startCamera(selectedDeviceId, video)
 
             // método do navegador que informa ao navegador que você deseja realizar uma animação e solicita que o navegador chame uma função específica para atualizar a tela na próxima vez que ele for redesenhar a tela
             requestAnimationFrame(tick);
@@ -166,7 +166,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ "nr_inscricao": num, "data_presenca": dt, "hora:": h })
+                body: JSON.stringify({ "nr_inscricao": num, "data_presenca": dt, "hora": h })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -199,7 +199,7 @@
         }
 
         // Função assíncrona para iniciar a câmera selecionada
-        async function startCamera(deviceId) {
+        async function startCamera(deviceId, video) {
             // Define as restrições para a captura de vídeo
             const constraints = {
                 video: {
@@ -211,15 +211,12 @@
             // Solicita o fluxo de mídia com as restrições definidas
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-            // Obtém o elemento de vídeo onde o fluxo será exibido
-            const videoElement = document.getElementById('video');
-
             // Define o objeto de mídia do vídeo como o fluxo obtido
-            videoElement.srcObject = stream;
+            video.srcObject = stream;
 
             // começar o vídeo
-            videoElement.setAttribute('playsinline', true); // necessário para o iOS safari
-            videoElement.play();
+            video.setAttribute('playsinline', true); // necessário para o iOS safari
+            video.play();
         }
 
         getCameras()
