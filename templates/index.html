@@ -82,8 +82,10 @@
         const result = document.getElementById('result');
         const cameraSelect = document.getElementById('cameraSelect');
         let currentStream;
+        let cont = 0;
  
         document.getElementById('startButton').addEventListener('click', async function () {
+            cont = 0
             const selectedDeviceId = cameraSelect.value;
             await startCamera(selectedDeviceId);
             requestAnimationFrame(tick);
@@ -97,13 +99,15 @@
                     inversionAttempts: 'dontInvert',
                 });
  
-                if (code) {
+                if (code && cont == 0) {
                     result.innerText = `Código QR detectado: ${code.data}`;
                     let nr_inscricao = code.data.split("/").pop().split(".")[0];
                     let data_presenca = new Date();
                     let hora = data_presenca.toTimeString().split(" ")[0];
                     enviarDados(nr_inscricao, data_presenca, hora);
                     window.open(code.data);
+                    video.pause()
+                    cont += 1
                 } else {
                     result.innerText = 'Nenhum QR Code detectado.';
                 }
