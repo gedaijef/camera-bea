@@ -12,6 +12,7 @@
     <canvas id="canvas" hidden></canvas>
     <video id="video" width="100%" height="500px" style="border: 1px solid black;"></video>
     <p id="result"></p>
+    <select id="cameraSelect"></select>
     <button id="startButton">Abrir Câmera</button>
 
     <style>
@@ -90,15 +91,15 @@
         // texto que fala se nenhum qrcode for detectado
         const result = document.getElementById('result');
 
-        // contador
-        let cont = 0
-
         document.getElementById('startButton').addEventListener('click', async function () {
             // Solicita acesso à câmera
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            /*const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             video.srcObject = stream;
             video.setAttribute('playsinline', true); // necessário para o iOS safari
-            video.play();
+            video.play();*/
+            const cameraSelect = document.getElementById('cameraSelect');
+            const selectedDeviceId = cameraSelect.value;
+            startCamera(selectedDeviceId)
 
             // método do navegador que informa ao navegador que você deseja realizar uma animação e solicita que o navegador chame uma função específica para atualizar a tela na próxima vez que ele for redesenhar a tela
             requestAnimationFrame(tick);
@@ -129,11 +130,11 @@
                 });
 
                 // se o qrcode for detectado
-                if (code && cont == 0) {
+                if (code) {
                     result.innerText = `Código QR detectado: ${code.data}`;
 
                     // Parar o vídeo
-                    // video.pause();
+                    //video.pause();
 
                     // Pegando número da inscrição e a data atual
                     let nr_inscricao = code.data
@@ -141,15 +142,16 @@
                     nr_inscricao = nr_inscricao.split(".")[0]
 
                     let data_presenca = new Date()
+                    let horas = String(data_presenca.getHours()).padStart(2, '0');
+                    let minutos = String(data_presenca.getMinutes()).padStart(2, '0');
+                    let segundos = String(data_presenca.getSeconds()).padStart(2, '0');
+                    let hora = horas + ':' + minutos + ':' + segundos
 
                     // enviar dados para banco de dados
-                    enviarDados(nr_inscricao, data_presenca)
-                    cont = 1
+                    enviarDados(nr_inscricao, data_presenca, hora)
 
                     // Redirecionar para o novo index
                     window.open(code.data);
-                    cont = 0
-                    code = null
                 } else {
                     result.innerText = 'Nenhum QR Code detectado.';
                 }
@@ -157,14 +159,14 @@
             requestAnimationFrame(tick);
         }
 
-        function enviarDados(num, dt) {
+        function enviarDados(num, dt, h) {
             console.log("entrou na função enviarDados")
             fetch ('https://camera-1n2b.onrender.com/salvar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ "nr_inscricao": num, "data_presenca": dt })
+                body: JSON.stringify({ "nr_inscricao": num, "data_presenca": dt, "hora:": h })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -175,6 +177,52 @@
                 });
 
         }
+
+        // Função assíncrona para obter as câmeras disponíveis
+        async function getCameras() {
+            // Obtém a lista de todos os dispositivos de mídia (câmeras, microfones, etc.)
+            const devices = await navigator.mediaDevices.enumerateDevices();
+
+            // Filtra a lista para obter apenas os dispositivos de entrada de vídeo (câmeras)
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+            // Obtém o elemento select onde as opções de câmera serão adicionadas
+            const cameraSelect = document.getElementById('cameraSelect');
+
+            // Para cada dispositivo de vídeo, cria uma opção no select
+            videoDevices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId; // Define o valor da opção como o ID do dispositivo
+                option.text = device.label || `Camera ${cameraSelect.length + 1}`; // Define o texto da opção
+                cameraSelect.appendChild(option); // Adiciona a opção ao select
+            });
+        }
+
+        // Função assíncrona para iniciar a câmera selecionada
+        async function startCamera(deviceId) {
+            // Define as restrições para a captura de vídeo
+            const constraints = {
+                video: {
+                    // Se um ID de dispositivo for fornecido, usa-o para selecionar a câmera específica
+                    deviceId: deviceId ? { exact: deviceId } : undefined
+                }
+            };
+
+            // Solicita o fluxo de mídia com as restrições definidas
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+            // Obtém o elemento de vídeo onde o fluxo será exibido
+            const videoElement = document.getElementById('video');
+
+            // Define o objeto de mídia do vídeo como o fluxo obtido
+            videoElement.srcObject = stream;
+
+            // começar o vídeo
+            videoElement.setAttribute('playsinline', true); // necessário para o iOS safari
+            videoElement.play();
+        }
+
+        getCameras()
     </script>
 </body>
 

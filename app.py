@@ -15,6 +15,7 @@ def salvar():
     data = request.json
     nr_inscricao = data["nr_inscricao"]
     data_presenca = data["data_presenca"]
+    hora = data["hora"]
 
     try:
         conn = get_db_connection()
@@ -26,7 +27,7 @@ def salvar():
         if len(rows) > 0:
             return jsonify({"status": "erro", "error": "Aluno ja marcou presença nessa data"}), 409
         
-        cur.execute("INSERT INTO presenca (nr_inscricao, data_presenca) VALUES (%s, %s)", (nr_inscricao, data_presenca))
+        cur.execute("INSERT INTO presenca (nr_inscricao, data_presenca, hora) VALUES (%s, %s, %s)", (nr_inscricao, data_presenca, hora))
         
         conn.commit()
         cur.close()
