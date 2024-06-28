@@ -107,6 +107,7 @@
                     enviarDados(nr_inscricao, data_presenca, hora);
                     window.open(code.data);
                     video.pause()
+                    stopCamera()
                     cont += 1
                 } else {
                     result.innerText = 'Nenhum QR Code detectado.';
@@ -146,9 +147,8 @@
         }
  
         async function startCamera(deviceId) {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
+            stopCamera()
+
             const constraints = {
                 video: {
                     deviceId: deviceId ? { exact: deviceId } : undefined
@@ -158,6 +158,13 @@
             video.srcObject = currentStream;
             video.setAttribute('playsinline', true);
             video.play();
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
         }
  
         getCameras();
