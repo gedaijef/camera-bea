@@ -13,7 +13,6 @@
 <p id="result"></p>
 <select id="cameraSelect"></select>
 <button id="startButton">Abrir Câmera</button>
-<button id="switchCameraButton">Trocar Câmera</button>
  
     <style>
         * {
@@ -88,14 +87,6 @@
             const selectedDeviceId = cameraSelect.value;
             await startCamera(selectedDeviceId);
             requestAnimationFrame(tick);
-        });
- 
-        document.getElementById('switchCameraButton').addEventListener('click', async function () {
-            const devices = await getCameras();
-            const currentDeviceIndex = devices.findIndex(device => device.deviceId === cameraSelect.value);
-            const nextDeviceIndex = (currentDeviceIndex + 1) % devices.length;
-            cameraSelect.value = devices[nextDeviceIndex].deviceId;
-            await startCamera(cameraSelect.value);
         });
  
         function tick() {
