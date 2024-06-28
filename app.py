@@ -1,7 +1,6 @@
 from flask import Flask, render_template, render_template_string, request, jsonify
 from flask_cors import CORS
 import pandas as pd
-import psycopg2
 from db_config import get_db_connection
 
 app = Flask(__name__)
@@ -14,7 +13,6 @@ def index():
 @app.route("/salvar", methods=["POST"])
 def salvar():
     data = request.json
-    print("chegou em /salvar: " + str(data))
     nr_inscricao = data["nr_inscricao"]
     data_presenca = data["data_presenca"]
 
