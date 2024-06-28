@@ -99,7 +99,7 @@
             video.play();*/
             const cameraSelect = document.getElementById('cameraSelect');
             const selectedDeviceId = cameraSelect.value;
-            startCamera(selectedDeviceId, video)
+            await startCamera(selectedDeviceId, video)
 
             // método do navegador que informa ao navegador que você deseja realizar uma animação e solicita que o navegador chame uma função específica para atualizar a tela na próxima vez que ele for redesenhar a tela
             requestAnimationFrame(tick);
@@ -132,9 +132,6 @@
                 // se o qrcode for detectado
                 if (code) {
                     result.innerText = `Código QR detectado: ${code.data}`;
-
-                    // Parar o vídeo
-                    //video.pause();
 
                     // Pegando número da inscrição e a data atual
                     let nr_inscricao = code.data
